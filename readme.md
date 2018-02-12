@@ -1,0 +1,36 @@
+
+Ini adalahnsebuah script PHP (CLI) untuk mengecheck apakah ada file dengan 
+konten yang sama di dalam sebuah folder.
+Jika ternyata ada, akan menampilkan konten terbanyak dan jumlah filenya.
+
+Contohnya, ada satu folder dengan total file berjumlah 5 file.
+ada 4 file dengan nama dan path yang berbeda tetapi kontennya sama, yaitu 'abcdef'
+dan ada 1 file dengan konten 'abcdefghijkl'
+Script ini akan mengeluarkan output "**4 abcdef**".
+
+## Instalasi
+
+Project ini menggunakan composer sebagai dependecy manager. 
+Pastikan telah menginstall composer sebelum menjalankan perintah dibawah.
+Project ini juga menggunakan **PHP 7+**, pastikan telah menggunakan PHP 7+.
+
+```
+$ git clone https://github.com/fathur/cntfile.git
+$ cd cntfile
+$ composer install
+$ composer dumpautoload
+```
+
+## Penggunaan
+
+Content yang ingin dicari isinya terdapat di folder `search-me`.
+Cara menggunakannya:
+
+```
+$ php cntfile
+```
+
+
+
+
+
