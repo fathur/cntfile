@@ -1,11 +1,16 @@
 <?php
 
-function dd($var) {
-    var_dump($var); die();
+function dd($var)
+{
+    var_dump($var);
+    die();
 }
 
 /**
  * Class for handle the task.
+ * This script intended for PHP 7+
+ *
+ * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
  */
 class DirectoryContent
 {
@@ -27,7 +32,7 @@ class DirectoryContent
     /**
      * @var array
      */
-    protected $ignoredFiles = [];
+    protected $ignoredFiles = ['.DS_Store'];
 
     /**
      * @var array
@@ -43,31 +48,71 @@ class DirectoryContent
      * DirectoryContent constructor.
      *
      * @param $path
+     * @throws Exception
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
+        $this->checkVersion();
+
         $this->directoryPath = $path;
     }
 
+    /**
+     * @param string|array $fileName
+     * @return $this
+     * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
+     */
     public function addIgnoredFile($fileName)
     {
-        array_push($this->ignoredFiles, $fileName);
+        if (is_array($fileName)) {
+            array_merge($this->ignoredFiles, $fileName);
+        } elseif (is_string($fileName)) {
+            array_push($this->ignoredFiles, $fileName);
+        } else {
+            throw new InvalidArgumentException();
+        }
 
         return $this;
     }
 
+    /**
+     * @param string|array $directoryName
+     * @return $this
+     * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
+     */
     public function addIgnoredDirectory($directoryName)
     {
-        array_push($this->ignoredDirectories, $directoryName);
+        if (is_array($directoryName)) {
+            array_merge($this->ignoredDirectories, $directoryName);
+        } elseif (is_string($directoryName)) {
+            array_push($this->ignoredDirectories, $directoryName);
+        } else {
+            throw new InvalidArgumentException();
+        }
 
         return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    protected function checkVersion()
+    {
+        $currentVersion = phpversion();
+
+        $exploded = explode(".", $currentVersion);
+
+        $firstElement = (int)reset($exploded);
+
+        if($firstElement < 7)
+            throw new Exception("You must use PHP 7+");
     }
 
     // The problem with memory
     // 1. Too much files
     // 2. Big size files
 
-    protected function readDirectory($path)
+    protected function readDirectory(string $path)
     {
         if ($handle = opendir($path)) {
 
@@ -80,7 +125,7 @@ class DirectoryContent
 
                         $this->readDirectory($path . "/" . $entry);
 
-                        if($this->debug)
+                        if ($this->debug)
                             echo "Dir: '" . $path . "/" . $entry . "'\n";
                     }
 
@@ -100,7 +145,7 @@ class DirectoryContent
      *
      * @param $filePath
      */
-    protected function readFile($filePath)
+    protected function readFile(string $filePath)
     {
         $exploded = explode("/", $filePath);
 
@@ -114,7 +159,7 @@ class DirectoryContent
                 echo "File: '$filePath' has content: $content\n";
 
             // save in memory
-            $this->storeInMemory($filePath, $content);
+            $this->storeInMemory($content);
         }
     }
 
@@ -124,6 +169,7 @@ class DirectoryContent
      */
     public function run()
     {
+
         $this->readDirectory($this->directoryPath);
 
         $counted = array_count_values($this->contentHashes);
@@ -131,15 +177,12 @@ class DirectoryContent
         arsort($counted);
 
         foreach ($counted as $hash => $count) {
-            echo $count . " ".$this->$hash . "\n"; die();
+            echo $count . " " . $this->$hash . "\n";
+            die();
         }
-//        dd($count);
-
-//        $c = "1f8ac10f23c5b5bc1167bda84b833e5c057a77d2";
-//        dd($this->{$c});
     }
 
-    protected function storeInMemory($filePath, $content)
+    protected function storeInMemory($content)
     {
         // remove space in beginning and end
         $content = trim($content);
@@ -150,16 +193,11 @@ class DirectoryContent
         // store availability variable content hashes
         array_push($this->contentHashes, $contentHash);
 
-        // store file path in dynamic property
+        // store file content in dynamic property
         $this->{$contentHash} = $content;
     }
 }
 
 // Run the code!!
 $dirContent = new DirectoryContent('./test');
-$dirContent->addIgnoredFile('.DS_Store');
 $dirContent->run();
-//
-//$x = "shfgfaiguoisf jgosdf gg iofj giosf giosfd go;isfj giosfjg sofdj gsf godfs giosfdj goisdfjg adhiosfdg ;oadf ";
-//
-//echo md5($x);
