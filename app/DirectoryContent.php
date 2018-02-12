@@ -1,42 +1,12 @@
 <?php
 
-function dd($var)
-{
-    var_dump($var);
-    die();
-}
+namespace App;
 
-interface Store
-{
-    public function addContent($content);
-
-    public function showContentHashes();
-}
-
-class MemoryStore implements Store
-{
-    protected $contentHashes = [];
-
-    public function addContent($content)
-    {
-        // remove space in beginning and end
-        $content = trim($content);
-
-        // make hash for variable naming
-        $contentHash = sha1($content);
-
-        // store availability variable content hashes
-        array_push($this->contentHashes, $contentHash);
-
-        // store file content in dynamic property
-        $this->{$contentHash} = $content;
-    }
-
-    public function showContentHashes()
-    {
-        return $this->contentHashes;
-    }
-}
+use App\Stores\FileStore;
+use App\Stores\MemoryStore;
+use App\Stores\SqliteStore;
+use Exception;
+use InvalidArgumentException;
 
 /**
  * Class for handle the task.
@@ -99,9 +69,33 @@ class DirectoryContent
             case 'memory':
                 $this->store = new MemoryStore();
                 break;
+            case 'file';
+                $this->store = new FileStore();
+                break;
+            case 'sqlite':
+                $this->store = new SqliteStore();
+                break;
             default:
                 $this->store = new MemoryStore();
         }
+    }
+
+    public function inMemory()
+    {
+        $this->store = new MemoryStore();
+        return $this;
+    }
+
+    public function inFile()
+    {
+        $this->store = new FileStore();
+        return $this;
+    }
+
+    public function inSqlite()
+    {
+        $this->store = new SqliteStore();
+        return $this;
     }
 
     /**
@@ -230,6 +224,4 @@ class DirectoryContent
     }
 }
 
-// Run the code!!
-$dirContent = new DirectoryContent('./test');
-$dirContent->run();
+
