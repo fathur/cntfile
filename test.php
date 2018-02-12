@@ -6,6 +6,38 @@ function dd($var)
     die();
 }
 
+interface Store
+{
+    public function addContent($content);
+
+    public function showContentHashes();
+}
+
+class MemoryStore implements Store
+{
+    protected $contentHashes = [];
+
+    public function addContent($content)
+    {
+        // remove space in beginning and end
+        $content = trim($content);
+
+        // make hash for variable naming
+        $contentHash = sha1($content);
+
+        // store availability variable content hashes
+        array_push($this->contentHashes, $contentHash);
+
+        // store file content in dynamic property
+        $this->{$contentHash} = $content;
+    }
+
+    public function showContentHashes()
+    {
+        return $this->contentHashes;
+    }
+}
+
 /**
  * Class for handle the task.
  * This script intended for PHP 7+
@@ -18,6 +50,12 @@ class DirectoryContent
      * @var bool
      */
     private $debug = false;
+
+
+    /**
+     * @var string
+     */
+    private $driver = 'memory'; // file, memory, sqlite
 
     /**
      * @var string
@@ -35,14 +73,10 @@ class DirectoryContent
     protected $ignoredFiles = ['.DS_Store'];
 
     /**
-     * @var array
+     * @var MemoryStore
      */
-    protected $contentHashes = [];
+    protected $store;
 
-    /**
-     * @var string
-     */
-    protected $driver = 'file'; // file, memory, sqlite
 
     /**
      * DirectoryContent constructor.
@@ -54,7 +88,20 @@ class DirectoryContent
     {
         $this->checkVersion();
 
+        $this->loadDriver();
+
         $this->directoryPath = $path;
+    }
+
+    private function loadDriver()
+    {
+        switch ($this->driver) {
+            case 'memory':
+                $this->store = new MemoryStore();
+                break;
+            default:
+                $this->store = new MemoryStore();
+        }
     }
 
     /**
@@ -104,7 +151,7 @@ class DirectoryContent
 
         $firstElement = (int)reset($exploded);
 
-        if($firstElement < 7)
+        if ($firstElement < 7)
             throw new Exception("You must use PHP 7+");
     }
 
@@ -158,8 +205,8 @@ class DirectoryContent
             if ($this->debug)
                 echo "File: '$filePath' has content: $content\n";
 
-            // save in memory
-            $this->storeInMemory($content);
+            // save in store
+            $this->store->addContent($content);
         }
     }
 
@@ -172,29 +219,14 @@ class DirectoryContent
 
         $this->readDirectory($this->directoryPath);
 
-        $counted = array_count_values($this->contentHashes);
+        $counted = array_count_values($this->store->showContentHashes());
 
         arsort($counted);
 
         foreach ($counted as $hash => $count) {
-            echo $count . " " . $this->$hash . "\n";
+            echo $count . " " . $this->store->$hash . "\n";
             die();
         }
-    }
-
-    protected function storeInMemory($content)
-    {
-        // remove space in beginning and end
-        $content = trim($content);
-
-        // make hash for variable naming
-        $contentHash = sha1($content);
-
-        // store availability variable content hashes
-        array_push($this->contentHashes, $contentHash);
-
-        // store file content in dynamic property
-        $this->{$contentHash} = $content;
     }
 }
 
