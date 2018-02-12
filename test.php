@@ -166,19 +166,19 @@ class DirectoryContent
             /* This is the correct way to loop over the directory. */
             while (false !== ($entry = readdir($handle))) {
 
-                if (is_dir($path . "/" . $entry)) {
+                if (is_dir("{$path}/{$entry}")) {
 
                     if (!in_array($entry, $this->ignoredDirectories)) {
 
-                        $this->readDirectory($path . "/" . $entry);
+                        $this->readDirectory("{$path}/{$entry}");
 
                         if ($this->debug)
-                            echo "Dir: '" . $path . "/" . $entry . "'\n";
+                            echo "Dir: '{$path}/{$entry}'\n";
                     }
 
-                } elseif (is_file($path . "/" . $entry)) {
+                } elseif (is_file("{$path}/{$entry}")) {
 
-                    $this->readFile($path . "/" . $entry);
+                    $this->readFile("{$path}/{$entry}");
                 }
             }
 
@@ -203,7 +203,7 @@ class DirectoryContent
             $content = file_get_contents($filePath);
 
             if ($this->debug)
-                echo "File: '$filePath' has content: $content\n";
+                echo "File: '{$filePath}' has content: $content\n";
 
             // save in store
             $this->store->addContent($content);
@@ -224,7 +224,7 @@ class DirectoryContent
         arsort($counted);
 
         foreach ($counted as $hash => $count) {
-            echo $count . " " . $this->store->$hash . "\n";
+            echo "{$count} {$this->store->$hash} \n";
             die();
         }
     }
