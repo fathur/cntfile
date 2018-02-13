@@ -10,7 +10,7 @@ use Exception;
  *
  * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
  */
-class DirectoryContent extends Property
+final class DirectoryContent extends Property
 {
 
     /**
@@ -101,14 +101,17 @@ class DirectoryContent extends Property
 
         $this->readDirectory($this->directoryPath);
 
-        $counted = array_count_values($this->store->showContentHashes());
-
-        arsort($counted);
-
-        foreach ($counted as $hash => $count) {
-            echo "{$count} {$this->store->$hash} \n";
-            die();
+        foreach ($this->store->showMaxContentHashes() as $hash => $count) {
+            echo "{$count} {$this->store->$hash}\n";
         }
+//        $counted = array_count_values($this->store->showContentHashes());
+//
+//        arsort($counted);
+//
+//        foreach ($counted as $hash => $count) {
+//            echo "{$count} {$this->store->$hash} \n";
+//            die();
+//        }
     }
 }
 
