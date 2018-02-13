@@ -8,11 +8,7 @@ require __DIR__ . '/vendor/autoload.php';
 // Run the code!!
 try {
 
-    $path = $argv[1];
-
-    if ($path === null) {
-        $path = './search-me';
-    }
+    $path = $argv[1] ?? './search-me';
 
     $dirContent = new DirectoryContent($path);
     $dirContent->inMemory()->run();
