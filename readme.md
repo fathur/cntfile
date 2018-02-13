@@ -23,12 +23,19 @@ $ composer dumpautoload
 
 ## Penggunaan
 
-Content yang ingin dicari isinya terdapat di folder `search-me`.
+Default content yang ingin dicari isinya terdapat di folder `search-me`.
+Jika ingin mencari folder lain, letakkan di argument pertama.
 Cara menggunakannya:
 
 ```
-$ php cntfile
+// default mencari di folder ./search-me
+$ php cntfile 
+
+// custom location
+$ php cntfile /letak/folder/yang/ingin/di/scan     
 ```
+
+
 
 
 

@@ -3,12 +3,20 @@
 
 use App\DirectoryContent;
 
-require __DIR__.'/vendor/autoload.php';
+require __DIR__ . '/vendor/autoload.php';
 
 // Run the code!!
 try {
-    $dirContent = new DirectoryContent('./search-me');
+
+    $path = $argv[1];
+
+    if ($path === null) {
+        $path = './search-me';
+    }
+
+    $dirContent = new DirectoryContent($path);
     $dirContent->inMemory()->run();
+
 } catch (Exception $e) {
     echo $e->getMessage();
 }
