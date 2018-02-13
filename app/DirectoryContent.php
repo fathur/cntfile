@@ -18,6 +18,8 @@ final class DirectoryContent extends Property
      */
     private $debug = false;
 
+    private $elapsed = [];
+
     /**
      * @var string
      */
@@ -31,6 +33,9 @@ final class DirectoryContent extends Property
      */
     public function __construct(string $path)
     {
+        if ($this->debug)
+            $this->elapsed['start'] = microtime(true);
+
         $this->checkVersion();
 
         $this->directoryPath = $path;
@@ -102,16 +107,12 @@ final class DirectoryContent extends Property
         $this->readDirectory($this->directoryPath);
 
         foreach ($this->store->showMaxContentHashes() as $hash => $count) {
-            echo "{$count} {$this->store->$hash}\n";
+            echo "\033[0;32m{$count} {$this->store->$hash}\033[0m\n";
         }
-//        $counted = array_count_values($this->store->showContentHashes());
-//
-//        arsort($counted);
-//
-//        foreach ($counted as $hash => $count) {
-//            echo "{$count} {$this->store->$hash} \n";
-//            die();
-//        }
+
+        if ($this->debug)
+            echo "\033[1;31mExecuted in: " . (microtime(true) - $this->elapsed['start']) . " s\e[0m \n";
+
     }
 }
 
