@@ -1,17 +1,17 @@
 
-Ini adalahnsebuah script PHP (CLI) untuk mengecheck apakah ada file dengan 
+Ini adalah sebuah script PHP (CLI) untuk mengecheck apakah ada file dengan 
 konten yang sama di dalam sebuah folder.
 Jika ternyata ada, akan menampilkan konten terbanyak dan jumlah filenya.
 
 Contohnya, ada satu folder dengan total file berjumlah 5 file.
-ada 4 file dengan nama dan path yang berbeda tetapi kontennya sama, yaitu 'abcdef'
-dan ada 1 file dengan konten 'abcdefghijkl'
+Ada 4 file dengan nama dan path yang berbeda tetapi kontennya sama, yaitu _"abcdef"_
+dan ada 1 file dengan konten _"abcdefghijkl"_.
 Script ini akan mengeluarkan output "**4 abcdef**".
 
 ## Instalasi
 
-Project ini menggunakan composer sebagai dependecy manager. 
-Pastikan telah menginstall composer sebelum menjalankan perintah dibawah.
+Project ini menggunakan [_composer_](https://getcomposer.org/) sebagai dependecy manager. 
+Pastikan telah menginstall [_composer_](https://getcomposer.org/) sebelum menjalankan perintah dibawah.
 Project ini juga menggunakan **PHP 7+**, pastikan telah menggunakan PHP 7+.
 
 ```
