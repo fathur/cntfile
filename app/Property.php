@@ -3,14 +3,10 @@
 
 namespace App;
 
-use App\Stores\FileStore;
 use App\Stores\MemoryStore;
-use App\Stores\SqliteStore;
 
-trait Property
+abstract class Property
 {
-
-
     /**
      * @var array
      */
@@ -22,25 +18,25 @@ trait Property
     protected $ignoredFiles = ['.DS_Store'];
 
     /**
-     * @var MemoryStore|FileStore|SqliteStore
+     * @var string
+     */
+    protected $driver = 'memory'; // file, memory, sqlite
+
+    /**
+     * @var MemoryStore
      */
     protected $store;
 
     /**
      * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
      */
-    private function loadDriver()
+    protected function loadDriver()
     {
         switch ($this->driver) {
             case 'memory':
                 $this->store = new MemoryStore();
                 break;
-            case 'file';
-                $this->store = new FileStore();
-                break;
-            case 'sqlite':
-                $this->store = new SqliteStore();
-                break;
+
             default:
                 $this->store = new MemoryStore();
         }
@@ -52,17 +48,6 @@ trait Property
         return $this;
     }
 
-    public function inFile()
-    {
-        $this->store = new FileStore();
-        return $this;
-    }
-
-    public function inSqlite()
-    {
-        $this->store = new SqliteStore();
-        return $this;
-    }
 
     /**
      * @param string|array $fileName

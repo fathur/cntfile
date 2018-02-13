@@ -13,20 +13,13 @@ use Exception;
  *
  * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
  */
-class DirectoryContent
+class DirectoryContent extends Property
 {
-    use Property;
 
     /**
      * @var bool
      */
     private $debug = false;
-
-
-    /**
-     * @var string
-     */
-    protected $driver = 'memory'; // file, memory, sqlite
 
     /**
      * @var string
