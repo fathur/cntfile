@@ -4,6 +4,7 @@
 namespace App;
 
 use App\Stores\MemoryStore;
+use App\Stores\StoreInterface;
 
 abstract class Property
 {
@@ -17,31 +18,18 @@ abstract class Property
      */
     protected $ignoredFiles = ['.DS_Store'];
 
-    /**
-     * @var string
-     */
-    protected $driver = 'memory'; // file, memory, sqlite
 
     /**
-     * @var MemoryStore
+     * @var StoreInterface
      */
     protected $store;
 
     /**
+     * Force store in memory
+     *
+     * @return $this
      * @author Fathur Rohman <hi.fathur.rohman@gmail.com>
      */
-    protected function loadDriver()
-    {
-        switch ($this->driver) {
-            case 'memory':
-                $this->store = new MemoryStore();
-                break;
-
-            default:
-                $this->store = new MemoryStore();
-        }
-    }
-
     public function inMemory()
     {
         $this->store = new MemoryStore();

@@ -2,9 +2,6 @@
 
 namespace App;
 
-use App\Stores\FileStore;
-use App\Stores\MemoryStore;
-use App\Stores\SqliteStore;
 use Exception;
 
 /**
@@ -29,23 +26,21 @@ class DirectoryContent extends Property
     /**
      * DirectoryContent constructor.
      *
-     * @param $path
+     * @param string $path
      * @throws Exception
      */
     public function __construct(string $path)
     {
         $this->checkVersion();
 
-        $this->loadDriver();
-
         $this->directoryPath = $path;
     }
 
-
-    // The problem with memory
-    // 1. Too much files
-    // 2. Big size files
-
+    /**
+     * Read directory recursively
+     *
+     * @param string $path
+     */
     protected function readDirectory(string $path)
     {
         if ($handle = opendir($path)) {
@@ -77,7 +72,7 @@ class DirectoryContent extends Property
     /**
      * Calculate file content here.
      *
-     * @param $filePath
+     * @param string $filePath
      */
     protected function readFile(string $filePath)
     {
