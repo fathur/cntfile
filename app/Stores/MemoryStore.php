@@ -28,8 +28,6 @@ class MemoryStore implements StoreInterface
      */
     public function addContent($content)
     {
-        // remove space in beginning and end
-        $content = trim($content);
 
         // make hash for variable naming
         $contentHash = sha1($content);
